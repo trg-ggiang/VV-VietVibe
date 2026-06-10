@@ -28,8 +28,8 @@ export class TokenRefreshInterceptor {
    */
   private async refreshAccessToken(apiBase: string): Promise<string | null> {
     try {
-      const { refreshToken } = useTokenStorage();
-      const storedRefreshToken = refreshToken.get();
+      const { getRefreshToken } = useTokenStorage();
+      const storedRefreshToken = getRefreshToken();
 
       if (!storedRefreshToken) {
         return null;
@@ -50,11 +50,11 @@ export class TokenRefreshInterceptor {
       }
 
       const data = await response.json();
-      const { accessToken, refreshToken: newRefreshToken } = data;
+      const { accessToken, refreshToken: newRefreshToken, user } = data;
 
       // Store new tokens
-      useTokenStorage().accessToken.set(accessToken);
-      useTokenStorage().refreshToken.set(newRefreshToken);
+      const { setTokens, getUser } = useTokenStorage();
+      setTokens(accessToken, newRefreshToken, user || getUser());
 
       return accessToken;
     } catch (error) {
@@ -72,8 +72,8 @@ export class TokenRefreshInterceptor {
     headers?: Record<string, string>;
     body?: string;
   }): Promise<{ url: string; options: RequestInit }> {
-    const { accessToken } = useTokenStorage();
-    const token = accessToken.get();
+    const { getAccessToken } = useTokenStorage();
+    const token = getAccessToken();
 
     const options: RequestInit = {
       method: config.method || 'GET',

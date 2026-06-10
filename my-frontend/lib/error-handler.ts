@@ -60,8 +60,16 @@ export class ErrorHandler {
    * Parse HTTP error status codes
    */
   private static parseHttpError(error: Response | Record<string, any>): AppError {
-    const statusCode = error.status || error.statusCode || 500;
-    const message = error.message || '';
+    let statusCode = 500;
+    let message = '';
+
+    if (error instanceof Response) {
+      statusCode = error.status;
+      message = error.statusText || '';
+    } else {
+      statusCode = error.status || error.statusCode || 500;
+      message = error.message || '';
+    }
 
     switch (statusCode) {
       case 400:

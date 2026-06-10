@@ -155,10 +155,10 @@ export const advancedSearch = (
       results.sort((a, b) => b.matchScore - a.matchScore);
       break;
     case 'newest':
-      results.sort((a, b) => (b.createdAt as any) - (a.createdAt as any));
+      results.sort((a, b) => ((b as any).createdAt || 0) - ((a as any).createdAt || 0));
       break;
     case 'popular':
-      results.sort((a, b) => (b.viewCount as any) - (a.viewCount as any));
+      results.sort((a, b) => ((b as any).viewCount || 0) - ((a as any).viewCount || 0));
       break;
   }
 
