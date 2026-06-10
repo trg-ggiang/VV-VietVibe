@@ -22,7 +22,7 @@ interface SearchPanelProps {
 
 // Level options for filtering
 const LEVEL_OPTIONS = ['N5', 'N4', 'N3', 'N2', 'N1'];
-const DIFFICULTY_OPTIONS = ['easy', 'medium', 'hard'];
+const DIFFICULTY_OPTIONS = ['easy', 'medium', 'hard'] as const;
 const SORT_OPTIONS = [
   { value: 'relevance', label: 'Phù hợp nhất' },
   { value: 'newest', label: 'Mới nhất' },
