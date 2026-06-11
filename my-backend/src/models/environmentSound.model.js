@@ -5,8 +5,10 @@ const EnvironmentSoundSchema = new Schema(
   {
     name: { type: String, required: true, trim: true },
     audio_url: { type: String, required: true, trim: true },
+    category: { type: String, default: 'Khác', trim: true },
   },
   { timestamps: true }
 );
 
 module.exports = mongoose.model('EnvironmentSound', EnvironmentSoundSchema);
+

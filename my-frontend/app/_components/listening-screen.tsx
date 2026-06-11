@@ -1712,8 +1712,8 @@ export default function ListeningScreen() {
             単語が見つかりません。
           </div>
         ) : (
-          <div>
-            <div className="text-xs font-semibold m-2 ">
+          <div className="border-t border-black/10 bg-[#F2F4F2] p-2">
+            <div className="text-xs font-semibold m-2">
               カード {vocabLoading ? "..." : vocabIndex + 1} /{" "}
               {vocabLoading ? "..." : vocabCards.length}
             </div>

@@ -9,28 +9,31 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EnvironmentSoundSchema = exports.EnvironmentSound = void 0;
-const mongoose_1 = require("@nestjs/mongoose");
-let EnvironmentSound = class EnvironmentSound {
+exports.CreateEnvironmentSoundDto = void 0;
+const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
+class CreateEnvironmentSoundDto {
     name;
     audio_url;
     category;
-};
-exports.EnvironmentSound = EnvironmentSound;
+}
+exports.CreateEnvironmentSoundDto = CreateEnvironmentSoundDto;
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, swagger_1.ApiProperty)({ description: 'Tên tạp âm', example: 'Quán cafe' }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], EnvironmentSound.prototype, "name", void 0);
+], CreateEnvironmentSoundDto.prototype, "name", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, swagger_1.ApiProperty)({ description: 'URL file âm thanh', example: '/audios/cafe.mp4' }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], EnvironmentSound.prototype, "audio_url", void 0);
+], CreateEnvironmentSoundDto.prototype, "audio_url", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: 'Khác' }),
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Phân loại', example: 'Trong nhà' }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
-], EnvironmentSound.prototype, "category", void 0);
-exports.EnvironmentSound = EnvironmentSound = __decorate([
-    (0, mongoose_1.Schema)({ timestamps: true })
-], EnvironmentSound);
-exports.EnvironmentSoundSchema = mongoose_1.SchemaFactory.createForClass(EnvironmentSound);
-//# sourceMappingURL=environment-sound.schema.js.map
+], CreateEnvironmentSoundDto.prototype, "category", void 0);
+//# sourceMappingURL=create-environment-sound.dto.js.map

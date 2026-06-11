@@ -3,6 +3,7 @@ export type EnvironmentSoundDocument = EnvironmentSound & Document;
 export declare class EnvironmentSound {
     name: string;
     audio_url: string;
+    category: string;
 }
 export declare const EnvironmentSoundSchema: import("mongoose").Schema<EnvironmentSound, import("mongoose").Model<EnvironmentSound, any, any, any, any, any, EnvironmentSound>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, EnvironmentSound, Document<unknown, {}, EnvironmentSound, {
     id: string;
@@ -23,6 +24,15 @@ export declare const EnvironmentSoundSchema: import("mongoose").Schema<Environme
         id: string;
     }> | undefined;
     audio_url?: import("mongoose").SchemaDefinitionProperty<string, EnvironmentSound, Document<unknown, {}, EnvironmentSound, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<EnvironmentSound & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & {
+        id: string;
+    }> | undefined;
+    category?: import("mongoose").SchemaDefinitionProperty<string, EnvironmentSound, Document<unknown, {}, EnvironmentSound, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<EnvironmentSound & {
         _id: import("mongoose").Types.ObjectId;

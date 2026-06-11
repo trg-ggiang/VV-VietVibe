@@ -1358,9 +1358,7 @@ export default function AdminContentScreen() {
                   <div className="flex h-full flex-col">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-xs font-semibold text-[#9aa8a2]">
-                          Nội dung
-                        </p>
+                      
                         <h1 className="mt-1 text-xl font-semibold">Nội dung</h1>
                       </div>
                       <button
