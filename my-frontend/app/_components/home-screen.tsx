@@ -84,6 +84,14 @@ type ProgressCounts = {
 
 const LAST_SELECTION_STORAGE_KEY = "vv-last-selection";
 
+const formatLearningUnitTitle = (title: string) => {
+  const formatted = title
+    .replace(/^\s*\u7b2c\s*[0-9\uff10-\uff19]+\s*\u8ab2\s*[\uff1a:]\s*/u, "")
+    .trim();
+
+  return formatted || title;
+};
+
 // Map places to icon names
 const placeIconMap: Record<string, IconName> = {
   // Vietnamese place name mappings
@@ -302,7 +310,7 @@ export default function HomeScreen() {
       const tasks = placeFull.situations.flatMap((situation) =>
         situation.learningUnits.map((unit) => ({
           id: unit.id,
-          title: unit.titleJa,
+          title: formatLearningUnitTitle(unit.titleJa),
           vocab: false,
           listen: false,
           learningUnitId: unit.id,
