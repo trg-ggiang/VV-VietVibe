@@ -219,6 +219,7 @@ export default function AdminContentScreen() {
   const [audioCurrentTime, setAudioCurrentTime] = useState(0);
   const [audioDuration, setAudioDuration] = useState(0);
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
+  const ambientAudioRef = useRef<HTMLAudioElement | null>(null);
   const progressBarRef = useRef<HTMLDivElement | null>(null);
   const [levels, setLevels] = useState<LevelResponse[]>([]);
   const [learningUnitOptions, setLearningUnitOptions] = useState<
@@ -442,6 +443,53 @@ export default function AdminContentScreen() {
       ? `${API_BASE_URL}${audioUrl}`
       : `${API_BASE_URL}/${audioUrl}`;
   };
+
+  const selectedAmbientOptions = useMemo(() => {
+    return ambientOptions.filter((option) =>
+      selectedAmbientIds.includes(option.id),
+    );
+  }, [ambientOptions, selectedAmbientIds]);
+
+  const ambientAudioSrc = useMemo(() => {
+    return selectedAmbientOptions[0]?.audioUrl
+      ? resolveAudioUrl(selectedAmbientOptions[0].audioUrl)
+      : "";
+  }, [selectedAmbientOptions]);
+
+  useEffect(() => {
+    if (!ambientAudioSrc) {
+      if (ambientAudioRef.current) {
+        ambientAudioRef.current.pause();
+        ambientAudioRef.current = null;
+      }
+      return;
+    }
+
+    const audio = new Audio(ambientAudioSrc);
+    audio.loop = true;
+    audio.volume = 0.4;
+    ambientAudioRef.current = audio;
+
+    if (isPlayingAudio) {
+      audio.play().catch(console.error);
+    }
+
+    return () => {
+      audio.pause();
+      ambientAudioRef.current = null;
+    };
+  }, [ambientAudioSrc]);
+
+  useEffect(() => {
+    const audio = ambientAudioRef.current;
+    if (audio) {
+      if (isPlayingAudio) {
+        audio.play().catch(console.error);
+      } else {
+        audio.pause();
+      }
+    }
+  }, [isPlayingAudio]);
 
   useEffect(() => {
     const audioUrl = activeLesson?.audio_url;
@@ -942,10 +990,6 @@ export default function AdminContentScreen() {
       isMounted = false;
     };
   }, []);
-
-  const selectedAmbientOptions = ambientOptions.filter((option) =>
-    selectedAmbientIds.includes(option.id),
-  );
 
   const activeDurationLabel = formatDuration(activeLesson?.duration_seconds);
   const activeAudioFileName = getAudioFileName(activeLesson?.audio_url);
