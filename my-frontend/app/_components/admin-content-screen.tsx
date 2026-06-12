@@ -56,7 +56,8 @@ type VocabRow = {
   type: string;
   meaning: string;
   example: string;
-  pronunciation?: string;
+  exampleJa?: string;
+  note?: string;
 };
 
 type ListeningPlaceResponse = {
@@ -246,6 +247,11 @@ export default function AdminContentScreen() {
   const [deleteLocationIdState, setDeleteLocationIdState] = useState<
     string | null
   >(null);
+  const [deleteSituationState, setDeleteSituationState] = useState<{
+    locationId: string;
+    unitId: string;
+    unitTitle: string;
+  } | null>(null);
   const [locationToast, setLocationToast] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "error">(
     "saved",
@@ -254,10 +260,11 @@ export default function AdminContentScreen() {
   const [vocabForm, setVocabForm] = useState({
     index: "",
     term: "",
-    type: "",
-    pronunciation: "",
+    type: "Danh từ",
     example: "",
+    exampleJa: "",
     meaning: "",
+    note: "",
   });
   const [vocabToEditIndex, setVocabToEditIndex] = useState<string | null>(null);
   const [deleteVocabIndex, setDeleteVocabIndex] = useState<string | null>(null);
@@ -759,7 +766,8 @@ export default function AdminContentScreen() {
               type: card.type || "",
               meaning: card.meaning || "",
               example: card.example || "",
-              pronunciation: card.note || "",
+              exampleJa: card.exampleJa || "",
+              note: card.note || "",
             }));
 
             loadedAmbientIds = localDraft.listening.ambientSoundIds ?? defaultAmbientIds;
@@ -790,7 +798,8 @@ export default function AdminContentScreen() {
               type: card.tag ?? "",
               meaning: card.meaningJa ?? "",
               example: card.exampleVi ?? "",
-              pronunciation: card.note ?? "",
+              exampleJa: card.exampleJa ?? "",
+              note: card.note ?? "",
             }));
           }
 
@@ -886,7 +895,8 @@ export default function AdminContentScreen() {
           type: row.type,
           meaning: row.meaning,
           example: row.example,
-          note: row.pronunciation,
+          exampleJa: row.exampleJa,
+          note: row.note,
         })),
         listening: {
           lessonId: activeLessonId ?? undefined,
@@ -1251,7 +1261,8 @@ export default function AdminContentScreen() {
           word_vi: vocabForm.term,
           meaning_ja: vocabForm.meaning,
           example_vi: vocabForm.example || undefined,
-          note: vocabForm.pronunciation || undefined,
+          example_ja: vocabForm.exampleJa || undefined,
+          note: vocabForm.note || undefined,
           tag: vocabForm.type || undefined,
         };
 
@@ -1273,7 +1284,8 @@ export default function AdminContentScreen() {
             type: createdCard.tag ?? vocabForm.type,
             meaning: createdCard.meaningJa ?? vocabForm.meaning,
             example: createdCard.exampleVi ?? vocabForm.example,
-            pronunciation: createdCard.note ?? vocabForm.pronunciation,
+            exampleJa: createdCard.exampleJa ?? vocabForm.exampleJa,
+            note: createdCard.note ?? vocabForm.note,
           },
         ]);
 
@@ -1299,7 +1311,8 @@ export default function AdminContentScreen() {
             word_vi: vocabForm.term,
             meaning_ja: vocabForm.meaning,
             example_vi: vocabForm.example || undefined,
-            note: vocabForm.pronunciation || undefined,
+            example_ja: vocabForm.exampleJa || undefined,
+            note: vocabForm.note || undefined,
             tag: vocabForm.type || undefined,
           };
 
@@ -1321,7 +1334,8 @@ export default function AdminContentScreen() {
                     type: updatedCard.tag ?? vocabForm.type,
                     meaning: updatedCard.meaningJa ?? vocabForm.meaning,
                     example: updatedCard.exampleVi ?? vocabForm.example,
-                    pronunciation: updatedCard.note ?? vocabForm.pronunciation,
+                    exampleJa: updatedCard.exampleJa ?? vocabForm.exampleJa,
+                    note: updatedCard.note ?? vocabForm.note,
                   }
                 : row,
             ),
@@ -1338,7 +1352,8 @@ export default function AdminContentScreen() {
                     type: vocabForm.type,
                     meaning: vocabForm.meaning,
                     example: vocabForm.example,
-                    pronunciation: vocabForm.pronunciation,
+                    exampleJa: vocabForm.exampleJa,
+                    note: vocabForm.note,
                   }
                 : row,
             ),
@@ -1602,6 +1617,20 @@ export default function AdminContentScreen() {
                                               >
                                                 <PlusIcon className="h-4 w-4" />
                                               </IconButton>
+
+                                              <IconButton
+                                                ariaLabel="Delete"
+                                                onClick={(event) => {
+                                                  event.stopPropagation();
+                                                  setDeleteSituationState({
+                                                    locationId: location.id,
+                                                    unitId: unit.id,
+                                                    unitTitle: unit.title,
+                                                  });
+                                                }}
+                                              >
+                                                <TrashIcon className="h-4 w-4 text-[#d46b6b]" />
+                                              </IconButton>
                                             </div>
 
                                             <StatusDot
@@ -1755,10 +1784,11 @@ export default function AdminContentScreen() {
                                   setVocabForm({
                                     index: (vocabRows.length + 1).toString(),
                                     term: "",
-                                    type: "",
-                                    pronunciation: "",
+                                    type: "Danh từ",
                                     example: "",
+                                    exampleJa: "",
                                     meaning: "",
+                                    note: "",
                                   });
                                 }}
                                 className="rounded-full bg-[#2f5d50] px-4 py-1.5 text-[11px] font-bold text-white hover:bg-[#23483e] transition-colors"
@@ -1827,11 +1857,11 @@ export default function AdminContentScreen() {
                                               setVocabForm({
                                                 index: row.index,
                                                 term: row.term,
-                                                type: row.type,
-                                                pronunciation:
-                                                  row.pronunciation ?? "",
+                                                type: row.type || "Danh từ",
                                                 example: row.example,
+                                                exampleJa: row.exampleJa ?? "",
                                                 meaning: row.meaning,
+                                                note: row.note ?? "",
                                               });
                                             }}
                                             className="text-[#9aa8a2] hover:text-[#2f5d50] transition-colors"
@@ -2629,36 +2659,28 @@ export default function AdminContentScreen() {
                   />
                 </label>
 
-                <div className="flex gap-4">
-                  <label className="flex-1 flex flex-col gap-2 text-black">
-                    Loại từ
-                    <input
-                      value={vocabForm.type}
-                      onChange={(e) =>
-                        setVocabForm((p) => ({ ...p, type: e.target.value }))
-                      }
-                      className="h-12 rounded-2xl border border-transparent bg-[#f7f9f7] px-4 text-sm text-[#1f2b27] ring-1 ring-[#eef2ee] focus:outline-none"
-                    />
-                  </label>
-                  <label className="flex-1 flex flex-col gap-2 text-black">
-                    Phát âm (tùy chọn)
-                    <input
-                      value={vocabForm.pronunciation}
-                      onChange={(e) =>
-                        setVocabForm((p) => ({
-                          ...p,
-                          pronunciation: e.target.value,
-                        }))
-                      }
-                      placeholder="VD: chém zó"
-                      className="h-12 rounded-2xl border border-transparent bg-[#f7f9f7] px-4 text-sm text-[#1f2b27] ring-1 ring-[#eef2ee] focus:outline-none"
-                    />
-                  </label>
-                </div>
+                <label className="flex flex-col gap-2 text-black">
+                  Loại từ
+                  <select
+                    value={vocabForm.type}
+                    onChange={(e) =>
+                      setVocabForm((p) => ({ ...p, type: e.target.value }))
+                    }
+                    className="h-12 rounded-2xl border border-transparent bg-[#f7f9f7] px-4 text-sm text-[#1f2b27] ring-1 ring-[#eef2ee] focus:outline-none appearance-none"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%237b8b83'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundPosition: `right 1rem center`, backgroundRepeat: `no-repeat`, backgroundSize: `1.2em 1.2em` }}
+                  >
+                    <option value="Danh từ">Danh từ</option>
+                    <option value="Động từ">Động từ</option>
+                    <option value="Tính từ">Tính từ</option>
+                    <option value="Trạng từ">Trạng từ</option>
+                    <option value="Cụm từ">Cụm từ</option>
+                    <option value="Thành ngữ">Thành ngữ</option>
+                    <option value="Khác">Khác</option>
+                  </select>
+                </label>
 
-                <label className="flex flex-col gap-2">
-                  <div></div>
-
+                <label className="flex flex-col gap-2 text-black">
+                  Ví dụ câu (tiếng Việt)
                   <input
                     value={vocabForm.example}
                     onChange={(e) =>
@@ -2669,7 +2691,7 @@ export default function AdminContentScreen() {
                   />
                 </label>
 
-                <p className="text-[11px] font-semibold text-[#2f5d50]">
+                <p className="pt-3 text-[11px] font-semibold text-[#2f5d50]">
                   MẶT SAU
                 </p>
                 <label className="flex flex-col gap-2 text-black">
@@ -2679,6 +2701,31 @@ export default function AdminContentScreen() {
                     onChange={(e) =>
                       setVocabForm((p) => ({ ...p, meaning: e.target.value }))
                     }
+                    placeholder="大げさに話す・ほら吹き"
+                    className="h-12 rounded-2xl border border-transparent bg-[#f7f9f7] px-4 text-sm text-[#1f2b27] ring-1 ring-[#eef2ee] focus:outline-none"
+                  />
+                </label>
+                
+                <label className="flex flex-col gap-2 text-black">
+                  Ví dụ tiếng Nhật
+                  <input
+                    value={vocabForm.exampleJa}
+                    onChange={(e) =>
+                      setVocabForm((p) => ({ ...p, exampleJa: e.target.value }))
+                    }
+                    placeholder="彼はいつも大げさに話すから、あまり信じないほうがいい。"
+                    className="h-12 rounded-2xl border border-transparent bg-[#f7f9f7] px-4 text-sm text-[#1f2b27] ring-1 ring-[#eef2ee] focus:outline-none"
+                  />
+                </label>
+
+                <label className="flex flex-col gap-2 text-black">
+                  Ghi chú
+                  <input
+                    value={vocabForm.note}
+                    onChange={(e) =>
+                      setVocabForm((p) => ({ ...p, note: e.target.value }))
+                    }
+                    placeholder="親しい間柄で使うカジュアルな表現..."
                     className="h-12 rounded-2xl border border-transparent bg-[#f7f9f7] px-4 text-sm text-[#1f2b27] ring-1 ring-[#eef2ee] focus:outline-none"
                   />
                 </label>
