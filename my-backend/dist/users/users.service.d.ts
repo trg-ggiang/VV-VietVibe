@@ -71,13 +71,36 @@ export declare class UsersService {
             completedAt: any;
         };
     }>;
-    findAll(search?: string, month?: string): Promise<(mongoose.Document<unknown, {}, UserDocument, {}, mongoose.DefaultSchemaOptions> & User & mongoose.Document<mongoose.Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+    findAll(search?: string, month?: string): Promise<{
+        progressPercent: number;
+        completedUnits: number;
+        totalUnits: any;
+        lastActive: any;
+        role: string;
+        email: string;
+        password_hash: string;
+        user_name: string;
+        full_name: string | null;
+        avatar_url: string | null;
+        listening_settings: {
+            playback_speed: number;
+            auto_pause: boolean;
+            environment_sound_id: any | null;
+            environment_volume: number;
+        };
+        badges: string[];
         _id: mongoose.Types.ObjectId;
-    }> & {
+        $locals: Record<string, unknown>;
+        $op: "save" | "validate" | "remove" | null;
+        $where: Record<string, unknown>;
+        baseModelName?: string;
+        collection: mongoose.Collection;
+        db: mongoose.Connection;
+        errors?: mongoose.Error.ValidationError;
+        isNew: boolean;
+        schema: mongoose.Schema;
         __v: number;
-    } & {
-        id: string;
-    })[]>;
+    }[]>;
     countAll(): Promise<number>;
     deleteUser(userId: string): Promise<{
         message: string;

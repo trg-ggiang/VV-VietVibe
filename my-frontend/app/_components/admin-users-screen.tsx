@@ -13,6 +13,10 @@ type BackendUser = {
   avatar_url: string | null;
   created_at: string;
   updated_at: string;
+  progressPercent?: number;
+  completedUnits?: number;
+  totalUnits?: number;
+  lastActive?: string;
 };
 
 type UserRow = {
@@ -61,6 +65,26 @@ function formatDate(isoDate: string): string {
   return `${dd}/${mm}/${yyyy}`;
 }
 
+function formatRelativeTime(isoDate: string): string {
+  if (!isoDate) return "—";
+  const d = new Date(isoDate);
+  const now = new Date();
+  const diffMs = now.getTime() - d.getTime();
+  if (diffMs < 0) return "Vừa xong";
+  const diffMins = Math.floor(diffMs / 60000);
+  
+  if (diffMins < 1) return "Vừa xong";
+  if (diffMins < 60) return `${diffMins} phút trước`;
+  
+  const diffHours = Math.floor(diffMins / 60);
+  if (diffHours < 24) return `${diffHours} giờ trước`;
+  
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays < 7) return `${diffDays} ngày trước`;
+  
+  return formatDate(isoDate);
+}
+
 function getInitials(name: string): string {
   const parts = name.trim().split(/\s+/);
   if (parts.length >= 2) return parts.slice(0, 2).map((p) => p[0]).join("").toUpperCase();
@@ -68,13 +92,17 @@ function getInitials(name: string): string {
 }
 
 function mapBackendUser(u: BackendUser): UserRow {
+  const progressPercent = u.progressPercent ?? 0;
+  const completed = u.completedUnits ?? 0;
+  const total = u.totalUnits ?? 0;
+  
   return {
     id: u._id,
     name: u.user_name,
     email: u.email,
-    progress: "—",
-    lessons: "—",
-    lastActive: "—",
+    progress: total > 0 ? `${progressPercent}%` : "—",
+    lessons: total > 0 ? `${completed}/${total} bài` : "—",
+    lastActive: u.lastActive ? formatRelativeTime(u.lastActive) : "—",
     initials: getInitials(u.user_name),
     joinedAt: formatDate(u.created_at),
   };
