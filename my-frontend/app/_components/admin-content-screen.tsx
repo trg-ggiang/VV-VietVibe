@@ -1084,12 +1084,13 @@ export default function AdminContentScreen() {
       draftWorkflow.draft.description ||
       `Nội dung luyện nghe và từ vựng cho tình huống ${activeUnit?.title ?? ""}.`,
     vocabCards: vocabRows.map((row) => ({
-      id: row.id,
-      term: row.term,
-      type: row.type,
-      meaning: row.meaning,
-      example: row.example,
-      note: row.pronunciation,
+    id: row.id,
+    term: row.term,
+    type: row.type,
+    meaning: row.meaning,
+    example: row.example,
+    exampleJa: row.exampleJa,
+    note: row.note,
     })),
     listening: {
       lessonId: activeLessonId ?? draftWorkflow.draft.listening?.lessonId,
@@ -1233,7 +1234,7 @@ export default function AdminContentScreen() {
               type: vocabForm.type,
               meaning: vocabForm.meaning,
               example: vocabForm.example,
-              pronunciation: vocabForm.pronunciation,
+              note: vocabForm.note,
             },
           ]);
 
