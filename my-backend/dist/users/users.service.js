@@ -289,8 +289,36 @@ let UsersService = class UsersService {
             .find(filter)
             .select('-password_hash')
             .sort({ created_at: -1 })
+            .lean()
             .exec();
-        return users;
+        const totalLearningUnits = await LearningUnit.countDocuments();
+        const usersWithStats = await Promise.all(users.map(async (u) => {
+            const progressDocs = await UserProgress.find({ user_id: u._id }).exec();
+            let completedUnits = 0;
+            let lastActive = u.created_at;
+            progressDocs.forEach((p) => {
+                const vocabCompleted = Boolean(p.vocabulary_progress?.completed);
+                const listenCompleted = Boolean(p.listening_progress?.completed);
+                if (vocabCompleted && listenCompleted) {
+                    completedUnits++;
+                }
+                if (p.updated_at && p.updated_at > lastActive) {
+                    lastActive = p.updated_at;
+                }
+            });
+            let progressPercent = 0;
+            if (totalLearningUnits > 0) {
+                progressPercent = Math.round((completedUnits / totalLearningUnits) * 100);
+            }
+            return {
+                ...u,
+                progressPercent,
+                completedUnits,
+                totalUnits: totalLearningUnits,
+                lastActive,
+            };
+        }));
+        return usersWithStats;
     }
     async countAll() {
         return this.userModel.countDocuments({ role: { $ne: 'admin' } }).exec();

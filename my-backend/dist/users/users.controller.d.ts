@@ -6,13 +6,36 @@ import { UpdateLearningUnitProgressDto } from './dto/update-learning-unit-progre
 export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
-    findAll(search?: string, month?: string): Promise<(import("mongoose").Document<unknown, {}, import("../login/schemas/user.schema.js").UserDocument, {}, import("mongoose").DefaultSchemaOptions> & import("../login/schemas/user.schema.js").User & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+    findAll(search?: string, month?: string): Promise<{
+        progressPercent: number;
+        completedUnits: number;
+        totalUnits: any;
+        lastActive: any;
+        role: string;
+        email: string;
+        password_hash: string;
+        user_name: string;
+        full_name: string | null;
+        avatar_url: string | null;
+        listening_settings: {
+            playback_speed: number;
+            auto_pause: boolean;
+            environment_sound_id: any | null;
+            environment_volume: number;
+        };
+        badges: string[];
         _id: import("mongoose").Types.ObjectId;
-    }> & {
+        $locals: Record<string, unknown>;
+        $op: "save" | "validate" | "remove" | null;
+        $where: Record<string, unknown>;
+        baseModelName?: string;
+        collection: import("mongoose").Collection;
+        db: import("mongoose").Connection;
+        errors?: import("mongoose").Error.ValidationError;
+        isNew: boolean;
+        schema: import("mongoose").Schema;
         __v: number;
-    } & {
-        id: string;
-    })[]>;
+    }[]>;
     countAll(): Promise<{
         count: number;
     }>;
