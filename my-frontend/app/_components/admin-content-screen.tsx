@@ -3324,6 +3324,90 @@ export default function AdminContentScreen() {
         </div>
       ) : null}
 
+      {deleteSituationState ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/25 px-6"
+          onClick={() => setDeleteSituationState(null)}
+        >
+          <div
+            className="w-full max-w-md rounded-3xl bg-white p-6 shadow-[0_20px_40px_rgba(0,0,0,0.18)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-[#eef2ee] pb-4">
+              <div className="flex items-center gap-2 text-sm font-semibold text-[#9f3d3a]">
+                <TrashIcon className="h-4 w-4 text-[#9F403D]" />
+                Xóa tình huống
+              </div>
+              <button
+                type="button"
+                onClick={() => setDeleteSituationState(null)}
+                className="text-[#9aa8a2]"
+              >
+                ×
+              </button>
+            </div>
+            <p className="mt-4 text-sm text-[#2D3432]">
+              Bạn có chắc chắn muốn xóa tình huống {deleteSituationState.unitTitle}?
+            </p>
+            <div className="mt-5 border-t border-[#eef2ee] pt-4">
+              <div className="flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setDeleteSituationState(null)}
+                  className="text-sm font-semibold text-[#7b8b83]"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const { locationId, unitId } = deleteSituationState;
+                    setSaveStatus("saving");
+
+                    try {
+                      if (!unitId.startsWith("unit-")) {
+                        await apiCall(`/listening/admin/situations/${unitId}`, {
+                          method: "DELETE",
+                        });
+                      }
+
+                      setLocationsState((prev) =>
+                        prev.map((l) =>
+                          l.id === locationId
+                            ? {
+                                ...l,
+                                units: l.units.filter((u) => u.id !== unitId),
+                              }
+                            : l,
+                        ),
+                      );
+                      
+                      if (selectedUnit?.unitId === unitId) {
+                        setSelectedUnit(null);
+                      }
+
+                      setSaveStatus("saved");
+                      setLocationToast("Đã xóa tình huống.");
+                    } catch (error) {
+                      console.error("Failed to delete situation", error);
+                      setSaveStatus("error");
+                      setLocationToast("Không thể xóa tình huống.");
+                    }
+
+                    setDeleteSituationState(null);
+                    window.setTimeout(() => setLocationToast(null), 2400);
+                  }}
+                  className="inline-flex items-center gap-2 rounded-full bg-[#9F403D] px-4 py-2 text-xs font-semibold text-white"
+                >
+                  <TrashIcon className="h-4 w-4" />
+                  Xóa
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       {locationToast ? (
         <div className="fixed top-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-3 rounded-2xl bg-white px-6 py-4 shadow-[0_16px_32px_rgba(0,0,0,0.12)]">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#d8eee2] text-[#2f5d50]">
