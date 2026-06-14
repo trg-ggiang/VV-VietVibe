@@ -38,6 +38,7 @@ type VocabCard = {
   tag?: string;
   meaning?: string;
   example?: string;
+  exampleJa?: string;
   note?: string;
 };
 
@@ -102,6 +103,8 @@ type ApiVocabCard = {
   meaning_ja?: string;
   exampleVi?: string;
   example_vi?: string;
+  exampleJa?: string;
+  example_ja?: string;
   note?: string;
 };
 
@@ -211,6 +214,7 @@ async function fetchVocabCards(learningUnitId?: string): Promise<VocabCard[]> {
         tag: c.tag ?? undefined,
         meaning: c.meaningJa ?? c.meaning_ja ?? "",
         example: c.exampleVi ?? c.example_vi ?? "",
+        exampleJa: c.exampleJa ?? c.example_ja ?? c.exampleVi ?? c.example_vi ?? "",
         note: c.note ?? undefined,
       };
     });
@@ -1748,12 +1752,12 @@ export default function ListeningScreen() {
 
                 <div className="absolute inset-0 h-full w-full vv-flip-side vv-flip-back ">
                   <div className="rounded-3xl border border-(--vv-border) bg-white px-6 py-8 text-left shadow-[0_12px_24px_rgba(31,43,39,0.08)]">
-                    <p className="text-base font-semibold text-foreground">
+                    <p className="text-xl font-semibold leading-snug text-foreground sm:text-2xl">
                       {vocabCard.meaning}
                     </p>
 
                     <p className="mt-3 text-xs text-(--vv-muted)">
-                      例：「{vocabCard.example}」
+                      例：「{vocabCard.exampleJa}」
                     </p>
 
                     <div className="mt-4 rounded-2xl bg-[#f3f4f2] px-4 py-3 text-xs text-(--vv-muted)">
