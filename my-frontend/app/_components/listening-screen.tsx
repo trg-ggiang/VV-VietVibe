@@ -38,6 +38,7 @@ type VocabCard = {
   tag?: string;
   meaning?: string;
   example?: string;
+  exampleJa?: string;
   note?: string;
 };
 
@@ -102,6 +103,8 @@ type ApiVocabCard = {
   meaning_ja?: string;
   exampleVi?: string;
   example_vi?: string;
+  exampleJa?: string;
+  example_ja?: string;
   note?: string;
 };
 
@@ -211,6 +214,7 @@ async function fetchVocabCards(learningUnitId?: string): Promise<VocabCard[]> {
         tag: c.tag ?? undefined,
         meaning: c.meaningJa ?? c.meaning_ja ?? "",
         example: c.exampleVi ?? c.example_vi ?? "",
+        exampleJa: c.exampleJa ?? c.example_ja ?? c.exampleVi ?? c.example_vi ?? "",
         note: c.note ?? undefined,
       };
     });
@@ -1753,7 +1757,7 @@ export default function ListeningScreen() {
                     </p>
 
                     <p className="mt-3 text-xs text-(--vv-muted)">
-                      例：「{vocabCard.example}」
+                      例：「{vocabCard.exampleJa}」
                     </p>
 
                     <div className="mt-4 rounded-2xl bg-[#f3f4f2] px-4 py-3 text-xs text-(--vv-muted)">
