@@ -170,6 +170,7 @@ export class ListeningService {
       name_ja: createDto.nameJa,
       description: createDto.description ?? null,
       avatar_url: createDto.avatarUrl ?? null,
+      icon_name: createDto.iconName ?? 'other',
     });
 
     return this.mapPlace(place);
@@ -194,6 +195,9 @@ export class ListeningService {
     }
     if (updateDto.avatarUrl !== undefined) {
       updatePayload.avatar_url = updateDto.avatarUrl;
+    }
+    if (updateDto.iconName !== undefined) {
+      updatePayload.icon_name = updateDto.iconName;
     }
 
     const updatedPlace = await Place.findByIdAndUpdate(placeId, updatePayload, {
@@ -1101,6 +1105,7 @@ export class ListeningService {
       nameJa: place.name_ja,
       description: place.description ?? null,
       avatarUrl: place.avatar_url ?? null,
+      iconName: place.icon_name ?? 'other',
     };
   }
 

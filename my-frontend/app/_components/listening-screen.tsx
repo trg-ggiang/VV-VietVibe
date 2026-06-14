@@ -120,6 +120,14 @@ const SETTINGS_STORAGE_KEY = "vv-listening-settings";
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
 
+const formatLearningUnitTitle = (title: string) => {
+  const formatted = title
+    .replace(/^\s*\u7b2c\s*[0-9\uff10-\uff19]+\s*\u8ab2\s*[\uff1a:]\s*/u, "")
+    .trim();
+
+  return formatted || title;
+};
+
 const updateProgressOnBackend = async (
   taskId: string,
   field: "vocab" | "listen",
@@ -664,8 +672,9 @@ export default function ListeningScreen() {
     activeTab === "vocab"
       ? `${vocabCards.length}カード${vocabTagSummary ? ` · ${vocabTagSummary}` : ""}`
       : "会話";
-  const headerEyebrow =
-    lesson?.titleJa ?? "スーパー / レジで支払う";
+  const headerEyebrow = lesson?.titleJa
+    ? formatLearningUnitTitle(lesson.titleJa)
+    : "スーパー / レジで支払う";
 
   const resolveAudioUrl = useCallback((audioUrl: string) => {
     if (!audioUrl) return "";

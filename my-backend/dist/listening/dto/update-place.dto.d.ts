@@ -3,4 +3,5 @@ export declare class UpdatePlaceDto {
     nameJa?: string;
     description?: string;
     avatarUrl?: string;
+    iconName?: string;
 }

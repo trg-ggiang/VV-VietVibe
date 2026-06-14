@@ -19,6 +19,7 @@ export declare class ListeningService {
         nameJa: any;
         description: any;
         avatarUrl: any;
+        iconName: any;
     }>;
     getLearningUnitsBySituationId(situationId: string): Promise<any>;
     getAllListeningLessons(): Promise<any>;
@@ -31,6 +32,7 @@ export declare class ListeningService {
         nameJa: any;
         description: any;
         avatarUrl: any;
+        iconName: any;
     }>;
     updatePlace(id: string, updateDto: UpdatePlaceDto): Promise<{
         id: string;
@@ -38,6 +40,7 @@ export declare class ListeningService {
         nameJa: any;
         description: any;
         avatarUrl: any;
+        iconName: any;
     }>;
     deletePlace(id: string): Promise<{
         deleted: boolean;

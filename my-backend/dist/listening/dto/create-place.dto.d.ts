@@ -3,4 +3,5 @@ export declare class CreatePlaceDto {
     nameJa: string;
     description?: string;
     avatarUrl?: string;
+    iconName?: string;
 }
