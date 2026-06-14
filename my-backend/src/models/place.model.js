@@ -7,6 +7,7 @@ const PlaceSchema = new Schema(
     name_ja: { type: String, required: true, trim: true },
     description: { type: String, default: null },
     avatar_url: { type: String, default: null },
+    icon_name: { type: String, default: 'other' },
   },
   { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } },
 );

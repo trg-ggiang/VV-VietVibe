@@ -8,6 +8,7 @@ import type { AdminContentDraftPayload } from "@/lib/admin-content-draft-workflo
 import { AutoSaveIndicator } from "./auto-save-indicator";
 import { useAdminContentDraftWorkflow } from "../hooks/use-admin-content-draft-workflow";
 import AdminSidebar from "./admin-sidebar";
+import { SituationIcon, SITUATION_ICON_NAMES, SITUATION_ICON_LABELS, type SituationIconName } from "@/lib/situation-icons";
 
 type Status = "published" | "edited" | "draft";
 
@@ -24,12 +25,10 @@ type Unit = {
 type Location = {
   id: string;
   label: string;
-  icon: IconName;
+  iconName: string;
   status: Status;
   units: Unit[];
 };
-
-type IconName = "cart" | "restaurant" | "hospital" | "bus" | "salon" | "bank";
 
 type SelectedUnit = {
   locationId: string;
@@ -64,6 +63,7 @@ type ListeningPlaceResponse = {
   id: string;
   nameVi?: string;
   nameJa?: string;
+  iconName?: string;
 };
 
 type ListeningPlaceFullResponse = ListeningPlaceResponse & {
@@ -236,8 +236,9 @@ export default function AdminContentScreen() {
   const [locationForm, setLocationForm] = useState({
     id: "",
     label: "",
-    icon: "",
+    iconName: "other",
   });
+  const [isIconDropdownOpen, setIsIconDropdownOpen] = useState(false);
   const [currentLocationId, setCurrentLocationId] = useState<string | null>(
     null,
   );
@@ -954,7 +955,7 @@ export default function AdminContentScreen() {
             return {
               id: placeFull.id,
               label: placeFull.nameJa || placeFull.nameVi || "Tên mới",
-              icon: "cart" as IconName,
+              iconName: placeFull.iconName || "cart",
               status: "draft" as Status,
               units: (placeFull.situations ?? []).map((situation) => {
                 const learningUnitId =
@@ -1089,7 +1090,7 @@ export default function AdminContentScreen() {
       type: row.type,
       meaning: row.meaning,
       example: row.example,
-      note: row.pronunciation,
+      note: row.note,
     })),
     listening: {
       lessonId: activeLessonId ?? draftWorkflow.draft.listening?.lessonId,
@@ -1233,7 +1234,7 @@ export default function AdminContentScreen() {
               type: vocabForm.type,
               meaning: vocabForm.meaning,
               example: vocabForm.example,
-              pronunciation: vocabForm.pronunciation,
+              note: vocabForm.note,
             },
           ]);
 
@@ -1427,7 +1428,7 @@ export default function AdminContentScreen() {
                           setLocationForm({
                             id: `loc-${Date.now()}`,
                             label: "",
-                            icon: "",
+                            iconName: "cart",
                           });
                         }}
                         className="inline-flex items-center gap-2 rounded-full bg-[#2f5d50] px-4 py-2 text-xs font-semibold text-white"
@@ -1504,8 +1505,8 @@ export default function AdminContentScreen() {
                                         isExpanded ? "rotate-0" : "-rotate-90"
                                       }`}
                                     />
-                                    <LocationIcon
-                                      name={location.icon}
+                                    <SituationIcon
+                                      name={location.iconName}
                                       className="h-4 w-4 text-[#2f5d50]"
                                     />
                                     {location.label}
@@ -1519,7 +1520,7 @@ export default function AdminContentScreen() {
                                           setLocationForm({
                                             id: location.id,
                                             label: location.label,
-                                            icon: location.icon,
+                                            iconName: location.iconName,
                                           });
                                         }}
                                       >
@@ -2860,20 +2861,44 @@ export default function AdminContentScreen() {
                   className="h-12 rounded-2xl border border-transparent bg-[#f7f9f7] px-4 text-sm text-[#1f2b27] ring-1 ring-[#eef2ee] focus:outline-none"
                 />
               </label>
-              <label className="flex flex-col gap-2 mt-4">
+              <div className="flex flex-col gap-2 mt-4 relative">
                 Biểu tượng
-                <input
-                  value={locationForm.icon}
-                  onChange={(e) =>
-                    setLocationForm((p) => ({ ...p, icon: e.target.value }))
-                  }
-                  placeholder="Dán biểu tượng cảm xúc — VD 🏬"
-                  className="h-12 rounded-2xl border border-transparent bg-[#f7f9f7] px-4 text-sm text-[#1f2b27] ring-1 ring-[#eef2ee] focus:outline-none"
-                />
-                <p className="text-[11px] text-[#9aa8a2]">
-                  Tìm kiếm biểu tượng cảm xúc trên emojipedia.org và dán vào đây
-                </p>
-              </label>
+                <div 
+                  className="relative mt-2 cursor-pointer"
+                  onClick={() => setIsIconDropdownOpen(!isIconDropdownOpen)}
+                >
+                  <div className="flex h-12 w-full items-center justify-between rounded-2xl border border-transparent bg-[#f7f9f7] pl-12 pr-4 text-sm text-[#1f2b27] ring-1 ring-[#eef2ee] focus:outline-none">
+                    <span>
+                      {SITUATION_ICON_LABELS[locationForm.iconName as SituationIconName] || "Chọn biểu tượng"}
+                    </span>
+                    <ChevronDownIcon className={`h-4 w-4 text-[#9aa8a2] transition-transform ${isIconDropdownOpen ? "rotate-180" : ""}`} />
+                  </div>
+                  <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#2f5d50]">
+                    <SituationIcon name={locationForm.iconName} className="h-5 w-5" />
+                  </div>
+                </div>
+
+                {isIconDropdownOpen && (
+                  <div className="absolute top-[100%] left-0 right-0 z-50 mt-2 max-h-60 overflow-y-auto rounded-xl border border-[#eef2ee] bg-white p-2 shadow-lg">
+                    {SITUATION_ICON_NAMES.map((name) => (
+                      <button
+                        key={name}
+                        type="button"
+                        onClick={() => {
+                          setLocationForm((p) => ({ ...p, iconName: name }));
+                          setIsIconDropdownOpen(false);
+                        }}
+                        className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition hover:bg-[#f7f9f7] ${
+                          locationForm.iconName === name ? "bg-[#e8f0ec] font-semibold text-[#2f5d50]" : "text-[#1f2b27]"
+                        }`}
+                      >
+                        <SituationIcon name={name} className="h-5 w-5 text-[#2f5d50]" />
+                        {SITUATION_ICON_LABELS[name as SituationIconName]}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
               <div className="mt-6 flex items-center justify-between text-xs text-[#7b8b83]">
                 <div className="text-black">
                   <div className="text-[11px] font-semibold">Trạng thái</div>
@@ -2899,7 +2924,7 @@ export default function AdminContentScreen() {
                 type="button"
                 onClick={async () => {
                   const nextLabel = locationForm.label || "Tên mới";
-                  const nextIcon = (locationForm.icon as IconName) || "cart";
+                  const nextIcon = locationForm.iconName || "other";
 
                   if (isAddLocationOpen) {
                     const tempId = `loc-${Date.now()}`;
@@ -2908,7 +2933,7 @@ export default function AdminContentScreen() {
                       {
                         id: tempId,
                         label: nextLabel,
-                        icon: nextIcon,
+                        iconName: nextIcon,
                         status: "draft",
                         units: [],
                       },
@@ -2925,6 +2950,7 @@ export default function AdminContentScreen() {
                             nameJa: nextLabel,
                             description: null,
                             avatarUrl: null,
+                            iconName: nextIcon,
                           }),
                         },
                       );
@@ -2966,6 +2992,7 @@ export default function AdminContentScreen() {
                             nameJa: nextLabel,
                             description: null,
                             avatarUrl: null,
+                            iconName: nextIcon,
                           }),
                         },
                       );
@@ -2976,7 +3003,7 @@ export default function AdminContentScreen() {
                             ? {
                                 ...l,
                                 label: nextLabel,
-                                icon: nextIcon,
+                                iconName: nextIcon,
                               }
                             : l,
                         ),
@@ -3457,132 +3484,7 @@ function IconButton({
   );
 }
 
-function LocationIcon({
-  name,
-  className,
-}: {
-  name: IconName;
-  className?: string;
-}) {
-  switch (name) {
-    case "cart":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <circle cx="8" cy="21" r="1" />
-          <circle cx="19" cy="21" r="1" />
-          <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-        </svg>
-      );
-    case "restaurant":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
-          <path d="M7 2v20" />
-          <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />
-        </svg>
-      );
-    case "hospital":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M3 21h18" />
-          <path d="M7 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16" />
-          <path d="M3 21v-9a2 2 0 0 1 2-2h2" />
-          <path d="M17 10h2a2 2 0 0 1 2 2v9" />
-          <path d="M12 7v4" />
-          <path d="M10 9h4" />
-        </svg>
-      );
-    case "bus":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M5 17H4v-9c0-1.1.9-2 2-2h12c1.6 0 3 1.2 3.4 2.7l.6 2.3v4c0 1.1-.9 2-2 2h-1" />
-          <circle cx="17" cy="17" r="2" />
-          <path d="M9 17h6" />
-          <circle cx="7" cy="17" r="2" />
-          <path d="M4 11h18" />
-          <path d="M10 6v5" />
-          <path d="M15 6v5" />
-        </svg>
-      );
-    case "salon":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <circle cx="6" cy="6" r="3" />
-          <circle cx="6" cy="18" r="3" />
-          <line x1="20" y1="4" x2="8.12" y2="15.88" />
-          <line x1="14.47" y1="14.48" x2="20" y2="20" />
-          <line x1="8.12" y1="8.12" x2="12" y2="12" />
-        </svg>
-      );
-    case "bank":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M4 9h16l-8-6-8 6Z" />
-          <path d="M6 12v6" />
-          <path d="M10 12v6" />
-          <path d="M14 12v6" />
-          <path d="M18 12v6" />
-          <path d="M3 21h18" />
-        </svg>
-      );
-    default:
-      return null;
-  }
-}
+
 
 function MenuIcon({ className }: { className?: string }) {
   return (

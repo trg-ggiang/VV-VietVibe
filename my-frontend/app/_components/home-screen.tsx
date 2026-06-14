@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { SituationIcon } from "@/lib/situation-icons";
 
 type Task = {
   id: string;
@@ -14,19 +15,10 @@ type Task = {
 
 type ToggleField = "vocab" | "listen";
 
-type IconName =
-  | "cart"
-  | "restaurant"
-  | "hospital"
-  | "bus"
-  | "salon"
-  | "bank"
-  | "taxi";
-
 type Section = {
   id: string;
   label: string;
-  icon: IconName;
+  iconName: string;
   tasks: Task[];
 };
 
@@ -35,6 +27,7 @@ type Place = {
   nameVi: string;
   nameJa: string;
   description?: string | null;
+  iconName?: string;
 };
 
 type Situation = {
@@ -92,35 +85,7 @@ const formatLearningUnitTitle = (title: string) => {
   return formatted || title;
 };
 
-// Map places to icon names
-const placeIconMap: Record<string, IconName> = {
-  // Vietnamese place name mappings
-  "siêu-thị": "cart",
-  "nhà-hàng": "restaurant",
-  "bệnh-viện": "hospital",
-  "bến-xe": "bus",
-  "tiệm-làm-đẹp": "salon",
-  "ngân-hàng": "bank",
-  "taxi": "taxi",
 
-  // Japanese place name mappings
-  "スーパー": "cart",
-  "レストラン": "restaurant",
-  "病院": "hospital",
-  "バス": "bus",
-  "美容室": "salon",
-  "銀行": "bank",
-  "タクシー": "taxi",
-
-  // English fallback mappings
-  super: "cart",
-  supermarket: "cart",
-  restaurant: "restaurant",
-  hospital: "hospital",
-  bus: "bus",
-  salon: "salon",
-  bank: "bank",
-};
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -259,22 +224,10 @@ export default function HomeScreen() {
 
         // Build minimal sections with empty tasks for now
         const nextSections: Section[] = places.map((place) => {
-          const placeKeyVi = place.nameVi.toLowerCase().replace(/\s+/g, "-");
-          const placeKeyJa = place.nameJa.toLowerCase();
-          const icon: IconName = Object.keys(placeIconMap).some((key) =>
-            placeKeyVi.includes(key) || placeKeyJa.includes(key),
-          )
-            ? placeIconMap[
-                Object.keys(placeIconMap).find((key) =>
-                  placeKeyVi.includes(key) || placeKeyJa.includes(key),
-                ) as string
-              ]
-            : "cart";
-
           return {
             id: place.id,
             label: place.nameJa,
-            icon,
+            iconName: place.iconName ?? "other",
             tasks: [],
           };
         });
@@ -691,7 +644,7 @@ export default function HomeScreen() {
                       >
                         <div className="flex items-center gap-2">
                           <span className="flex h-8 w-8 items-center justify-center text-(--vv-accent-strong)">
-                            <Icon name={section.icon} className="h-4 w-4" />
+                            <SituationIcon name={section.iconName} className="h-4 w-4" />
                           </span>
                           <div className="text-left">
                             <p className="text-sm font-semibold">
@@ -773,7 +726,7 @@ export default function HomeScreen() {
                     >
                       <div className="flex items-center gap-3">
                         <span className="flex h-9 w-9 items-center justify-center text-(--vv-accent-strong)">
-                          <Icon name={section.icon} className="h-5 w-5" />
+                          <SituationIcon name={section.iconName} className="h-5 w-5" />
                         </span>
                         <div className="text-left">
                           <p className="text-sm font-semibold">
@@ -932,141 +885,3 @@ function ChevronIcon({ className }: { className?: string }) {
   );
 }
 
-function Icon({ name, className }: { name: IconName; className?: string }) {
-  switch (name) {
-    case "cart":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <circle cx="8" cy="21" r="1" />
-          <circle cx="19" cy="21" r="1" />
-          <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-        </svg>
-      );
-    case "restaurant":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
-          <path d="M7 2v20" />
-          <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />
-        </svg>
-      );
-    case "hospital":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M3 21h18" />
-          <path d="M7 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16" />
-          <path d="M3 21v-9a2 2 0 0 1 2-2h2" />
-          <path d="M17 10h2a2 2 0 0 1 2 2v9" />
-          <path d="M12 7v4" />
-          <path d="M10 9h4" />
-        </svg>
-      );
-    case "bus":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M5 17H4v-9c0-1.1.9-2 2-2h12c1.6 0 3 1.2 3.4 2.7l.6 2.3v4c0 1.1-.9 2-2 2h-1" />
-          <circle cx="17" cy="17" r="2" />
-          <path d="M9 17h6" />
-          <circle cx="7" cy="17" r="2" />
-          <path d="M4 11h18" />
-          <path d="M10 6v5" />
-          <path d="M15 6v5" />
-        </svg>
-      );
-    case "salon":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <circle cx="6" cy="6" r="3" />
-          <circle cx="6" cy="18" r="3" />
-          <line x1="20" y1="4" x2="8.12" y2="15.88" />
-          <line x1="14.47" y1="14.48" x2="20" y2="20" />
-          <line x1="8.12" y1="8.12" x2="12" y2="12" />
-        </svg>
-      );
-    case "bank":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M4 9h16l-8-6-8 6Z" />
-          <path d="M6 12v6" />
-          <path d="M10 12v6" />
-          <path d="M14 12v6" />
-          <path d="M18 12v6" />
-          <path d="M3 21h18" />
-        </svg>
-      );
-    case "taxi":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
-          <circle cx="7" cy="17" r="2" />
-          <path d="M9 17h6" />
-          <circle cx="17" cy="17" r="2" />
-        </svg>
-      );
-    default:
-      return null;
-  }
-}

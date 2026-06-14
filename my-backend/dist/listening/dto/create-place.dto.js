@@ -17,6 +17,7 @@ class CreatePlaceDto {
     nameJa;
     description;
     avatarUrl;
+    iconName;
 }
 exports.CreatePlaceDto = CreatePlaceDto;
 __decorate([
@@ -43,4 +44,10 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreatePlaceDto.prototype, "avatarUrl", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ type: String, description: 'Icon name for the place', example: 'other' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreatePlaceDto.prototype, "iconName", void 0);
 //# sourceMappingURL=create-place.dto.js.map

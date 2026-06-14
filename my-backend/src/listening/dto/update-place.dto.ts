@@ -21,4 +21,9 @@ export class UpdatePlaceDto {
   @IsOptional()
   @IsString()
   avatarUrl?: string;
+
+  @ApiPropertyOptional({ type: String, description: 'Icon name for the place', example: 'restaurant' })
+  @IsOptional()
+  @IsString()
+  iconName?: string;
 }

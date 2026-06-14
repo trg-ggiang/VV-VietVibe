@@ -17,6 +17,7 @@ class UpdatePlaceDto {
     nameJa;
     description;
     avatarUrl;
+    iconName;
 }
 exports.UpdatePlaceDto = UpdatePlaceDto;
 __decorate([
@@ -43,4 +44,10 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UpdatePlaceDto.prototype, "avatarUrl", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ type: String, description: 'Icon name for the place', example: 'restaurant' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdatePlaceDto.prototype, "iconName", void 0);
 //# sourceMappingURL=update-place.dto.js.map
