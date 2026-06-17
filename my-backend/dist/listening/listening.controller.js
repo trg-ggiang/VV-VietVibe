@@ -202,7 +202,8 @@ __decorate([
                 const extension = (0, path_1.extname)(decodedName).toLowerCase();
                 let baseName = decodedName.substring(0, decodedName.length - extension.length);
                 baseName = baseName.replace(/[^a-zA-Z0-9\u0080-\uFFFF_-]/g, '_');
-                cb(null, `${baseName}${extension}`);
+                const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+                cb(null, `${baseName}-${uniqueSuffix}${extension}`);
             },
         }),
         limits: {

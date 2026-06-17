@@ -416,6 +416,7 @@ export class ListeningService {
     return {
       ...lesson.toObject(),
       ambientSoundIds: (lesson.ambient_sound_ids || []).map(String),
+      audioMode: lesson.audio_mode || 'split',
       transcriptLines,
     };
   }
@@ -435,6 +436,7 @@ export class ListeningService {
     return {
       ...lesson.toObject(),
       ambientSoundIds: (lesson.ambient_sound_ids || []).map(String),
+      audioMode: lesson.audio_mode || 'split',
       transcriptLines,
     };
   }
@@ -450,6 +452,7 @@ export class ListeningService {
       title_vi: createDto.titleVi,
       title_ja: createDto.titleJa,
       audio_url: createDto.audioUrl,
+      audio_mode: createDto.audioMode || 'split',
       duration_seconds: createDto.durationSeconds,
       description: createDto.description,
       ambient_sound_ids: createDto.ambientSoundIds || [],
@@ -489,6 +492,9 @@ export class ListeningService {
     }
     if (updateDto.audioUrl !== undefined) {
       updatePayload.audio_url = updateDto.audioUrl;
+    }
+    if (updateDto.audioMode !== undefined) {
+      updatePayload.audio_mode = updateDto.audioMode;
     }
     if (updateDto.durationSeconds !== undefined) {
       updatePayload.duration_seconds = updateDto.durationSeconds;
@@ -928,6 +934,7 @@ export class ListeningService {
       titleVi: lesson.title_vi,
       titleJa: lesson.title_ja,
       audioUrl: lesson.audio_url,
+      audioMode: lesson.audio_mode || 'split',
       durationSeconds: lesson.duration_seconds,
       description: lesson.description,
       ambientSoundIds: (lesson.ambient_sound_ids || []).map(String),
@@ -963,6 +970,7 @@ export class ListeningService {
       titleVi: lesson.title_vi,
       titleJa: lesson.title_ja,
       audioUrl: lesson.audio_url,
+      audioMode: lesson.audio_mode || 'split',
       durationSeconds: lesson.duration_seconds,
       currentPositionSeconds,
       playbackSpeed: settings.playbackSpeed,

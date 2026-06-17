@@ -321,6 +321,10 @@ export default function AdminContentScreen() {
         const roundedDuration = Math.round(duration) || 0;
         
         setDetailError(null);
+        setIsPlayingAudio(false);
+        setAudioCurrentTime(0);
+        setAudioDuration(roundedDuration);
+        previewAudioRef.current?.pause();
         setActiveLesson((prev) => {
           if (prev) {
             return {
@@ -524,6 +528,16 @@ export default function AdminContentScreen() {
     const handleLoadedMetadata = () => {
       setAudioDuration(audio.duration);
     };
+    const handleError = () => {
+      setIsPlayingAudio(false);
+      setAudioCurrentTime(0);
+      setAudioDuration(0);
+      setDetailError(`Không phát được audio: ${resolvedUrl}`);
+      console.error("Preview audio failed to load", {
+        src: resolvedUrl,
+        error: audio.error,
+      });
+    };
     const handleEnded = () => {
       setIsPlayingAudio(false);
       setAudioCurrentTime(0);
@@ -533,6 +547,7 @@ export default function AdminContentScreen() {
     audio.addEventListener("pause", handlePause);
     audio.addEventListener("timeupdate", handleTimeUpdate);
     audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.addEventListener("error", handleError);
     audio.addEventListener("ended", handleEnded);
 
     return () => {
@@ -541,6 +556,7 @@ export default function AdminContentScreen() {
       audio.removeEventListener("pause", handlePause);
       audio.removeEventListener("timeupdate", handleTimeUpdate);
       audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("error", handleError);
       audio.removeEventListener("ended", handleEnded);
       previewAudioRef.current = null;
     };
@@ -1560,15 +1576,24 @@ export default function AdminContentScreen() {
                                     </button>
                                     <div className="mt-1 space-y-2">
                                       {filteredUnits.map((unit) => (
-                                        <button
+                                        <div
                                           key={unit.id}
-                                          type="button"
+                                          role="button"
+                                          tabIndex={0}
                                           onClick={() =>
                                             setSelectedUnit({
                                               locationId: location.id,
                                               unitId: unit.id,
                                             })
                                           }
+                                          onKeyDown={(event) => {
+                                            if (event.key !== "Enter" && event.key !== " ") return;
+                                            event.preventDefault();
+                                            setSelectedUnit({
+                                              locationId: location.id,
+                                              unitId: unit.id,
+                                            });
+                                          }}
                                           className={`group flex w-full items-center justify-between rounded-xl px-2 py-2 text-left text-sm transition ${
                                             selectedUnit?.unitId === unit.id
                                               ? "bg-(--vv-accent-soft)"
@@ -1648,7 +1673,7 @@ export default function AdminContentScreen() {
                                               }}
                                             />
                                           </div>
-                                        </button>
+                                        </div>
                                       ))}
                                       {filteredUnits.length === 0 ? (
                                         <p className="px-2 pb-2 text-xs text-[#9aa8a2]">

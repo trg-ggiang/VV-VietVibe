@@ -99,8 +99,9 @@ export class ListeningController {
           let baseName = decodedName.substring(0, decodedName.length - extension.length);
           // Replace spaces and special characters with underscore to avoid URL issues
           baseName = baseName.replace(/[^a-zA-Z0-9\u0080-\uFFFF_-]/g, '_');
-          
-          cb(null, `${baseName}${extension}`);
+
+          const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+          cb(null, `${baseName}-${uniqueSuffix}${extension}`);
         },
       }),
       limits: {

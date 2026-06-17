@@ -129,6 +129,7 @@ export declare class ListeningController {
             titleVi: any;
             titleJa: any;
             audioUrl: any;
+            audioMode: any;
             durationSeconds: any;
             description: any;
             ambientSoundIds: any;
@@ -149,6 +150,7 @@ export declare class ListeningController {
             titleVi: any;
             titleJa: any;
             audioUrl: any;
+            audioMode: any;
             durationSeconds: any;
             currentPositionSeconds: number;
             playbackSpeed: 1 | 0.75;
@@ -207,6 +209,7 @@ export declare class ListeningController {
             titleVi: any;
             titleJa: any;
             audioUrl: any;
+            audioMode: any;
             durationSeconds: any;
             description: any;
             ambientSoundIds: any;
@@ -227,6 +230,7 @@ export declare class ListeningController {
             titleVi: any;
             titleJa: any;
             audioUrl: any;
+            audioMode: any;
             durationSeconds: any;
             currentPositionSeconds: number;
             playbackSpeed: 1 | 0.75;
@@ -285,6 +289,7 @@ export declare class ListeningController {
             titleVi: any;
             titleJa: any;
             audioUrl: any;
+            audioMode: any;
             durationSeconds: any;
             description: any;
             ambientSoundIds: any;
@@ -305,6 +310,7 @@ export declare class ListeningController {
             titleVi: any;
             titleJa: any;
             audioUrl: any;
+            audioMode: any;
             durationSeconds: any;
             currentPositionSeconds: number;
             playbackSpeed: 1 | 0.75;
@@ -345,6 +351,7 @@ export declare class ListeningController {
         titleVi: any;
         titleJa: any;
         audioUrl: any;
+        audioMode: any;
         durationSeconds: any;
         currentPositionSeconds: number;
         playbackSpeed: 1 | 0.75;
@@ -402,6 +409,7 @@ export declare class ListeningController {
             titleVi: any;
             titleJa: any;
             audioUrl: any;
+            audioMode: any;
             durationSeconds: any;
             description: any;
             ambientSoundIds: any;
@@ -422,6 +430,7 @@ export declare class ListeningController {
             titleVi: any;
             titleJa: any;
             audioUrl: any;
+            audioMode: any;
             durationSeconds: any;
             currentPositionSeconds: number;
             playbackSpeed: 1 | 0.75;
@@ -480,6 +489,7 @@ export declare class ListeningController {
             titleVi: any;
             titleJa: any;
             audioUrl: any;
+            audioMode: any;
             durationSeconds: any;
             description: any;
             ambientSoundIds: any;
@@ -500,6 +510,7 @@ export declare class ListeningController {
             titleVi: any;
             titleJa: any;
             audioUrl: any;
+            audioMode: any;
             durationSeconds: any;
             currentPositionSeconds: number;
             playbackSpeed: 1 | 0.75;

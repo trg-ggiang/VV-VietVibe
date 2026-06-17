@@ -372,6 +372,7 @@ async function publishListeningLesson(
     titleVi: listening.titleVi,
     titleJa: listening.titleJa || listening.titleVi,
     audioUrl: listening.audioUrl,
+    audioMode: "timed",
     durationSeconds: listening.durationSeconds || 1,
     description: listening.description || draft.description || null,
     transcriptLines,

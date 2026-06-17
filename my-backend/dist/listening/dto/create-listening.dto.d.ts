@@ -4,6 +4,7 @@ export declare class CreateListeningDto {
     titleVi: string;
     titleJa: string;
     audioUrl: string;
+    audioMode?: 'split' | 'timed';
     durationSeconds: number;
     description?: string;
     transcriptLines?: TranscriptLineDto[];

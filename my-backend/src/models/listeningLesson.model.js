@@ -7,6 +7,7 @@ const ListeningLessonSchema = new Schema(
     title_vi: { type: String, required: true },
     title_ja: { type: String, required: true },
     audio_url: { type: String, required: true },
+    audio_mode: { type: String, enum: ['split', 'timed'], default: 'split' },
     duration_seconds: { type: Number, required: true },
     description: { type: String, default: null },
     ambient_sound_ids: { type: [{ type: Schema.Types.ObjectId, ref: 'EnvironmentSound' }], default: [] },

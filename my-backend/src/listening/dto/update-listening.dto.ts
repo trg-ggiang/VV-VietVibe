@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsArray, IsMongoId, IsOptional, IsString, Min, ValidateNested } from 'class-validator';
+import { IsArray, IsIn, IsMongoId, IsOptional, IsString, Min, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { TranscriptLineDto } from '../transcript-line.dto';
 
@@ -23,6 +23,11 @@ export class UpdateListeningDto {
   @IsOptional()
   @IsString()
   audioUrl?: string;
+
+  @ApiPropertyOptional({ enum: ['split', 'timed'], description: 'Audio playback source mode: split sentence files or one timed full audio file' })
+  @IsOptional()
+  @IsIn(['split', 'timed'])
+  audioMode?: 'split' | 'timed';
 
   @ApiPropertyOptional({ type: Number, description: 'Duration of the audio in seconds', example: 68 })
   @IsOptional()

@@ -25,6 +25,7 @@ type ListeningLesson = {
   titleVi: string;
   titleJa: string;
   audioUrl: string;
+  audioMode?: "split" | "timed";
   durationSeconds: number;
   description?: string | null;
   ambientSoundIds?: string[];
@@ -80,6 +81,8 @@ type ApiListeningLesson = {
   titleJa?: string;
   audio_url?: string;
   audioUrl?: string;
+  audio_mode?: "split" | "timed";
+  audioMode?: "split" | "timed";
   duration_seconds?: number;
   durationSeconds?: number;
   description?: string | null;
@@ -408,7 +411,7 @@ export default function ListeningScreen() {
         if (learningUnitId) {
           const url = `${BACKEND_URL}/listening/learning-unit/${learningUnitId}`;
           console.log(`Fetching listening lesson from: ${url}`);
-          const detailRes = await fetch(url);
+          const detailRes = await fetch(url, { cache: "no-store" });
           const detailPayload = (await detailRes.json()) as unknown;
 
           if (!detailRes.ok) {
@@ -427,6 +430,7 @@ export default function ListeningScreen() {
             titleVi: detailJson.title_vi ?? detailJson.titleVi ?? "",
             titleJa: detailJson.title_ja ?? detailJson.titleJa ?? "",
             audioUrl: detailJson.audio_url ?? detailJson.audioUrl ?? "",
+            audioMode: detailJson.audio_mode ?? detailJson.audioMode ?? "split",
             durationSeconds:
               detailJson.duration_seconds ?? detailJson.durationSeconds ?? 0,
             description: detailJson.description ?? null,
@@ -449,7 +453,7 @@ export default function ListeningScreen() {
         } else {
           const listUrl = `${BACKEND_URL}/listening`;
           console.log(`Fetching listening list from: ${listUrl}`);
-          const listRes = await fetch(listUrl);
+          const listRes = await fetch(listUrl, { cache: "no-store" });
           const listJson = (await listRes.json()) as unknown;
 
           if (!listRes.ok) {
@@ -474,7 +478,7 @@ export default function ListeningScreen() {
           const id = String(chosen._id ?? chosen.id);
           const detailUrl = `${BACKEND_URL}/listening/${id}`;
           console.log(`Fetching listening detail from: ${detailUrl}`);
-          const detailRes = await fetch(detailUrl);
+          const detailRes = await fetch(detailUrl, { cache: "no-store" });
           const detailPayload = (await detailRes.json()) as unknown;
 
           if (!detailRes.ok) {
@@ -493,6 +497,7 @@ export default function ListeningScreen() {
             titleVi: detailJson.title_vi ?? detailJson.titleVi ?? "",
             titleJa: detailJson.title_ja ?? detailJson.titleJa ?? "",
             audioUrl: detailJson.audio_url ?? detailJson.audioUrl ?? "",
+            audioMode: detailJson.audio_mode ?? detailJson.audioMode ?? "split",
             durationSeconds:
               detailJson.duration_seconds ?? detailJson.durationSeconds ?? 0,
             description: detailJson.description ?? null,
@@ -687,6 +692,10 @@ export default function ListeningScreen() {
   const buildLineAudioCandidates = useCallback(
     (line: TranscriptLine) => {
       const explicitUrl = line.audioUrl ? [resolveAudioUrl(line.audioUrl)] : [];
+      if (lesson?.audioMode === "timed") {
+        return explicitUrl;
+      }
+
       const textVariants = Array.from(
         new Set([
           line.textVi.trim(),
@@ -709,7 +718,7 @@ export default function ListeningScreen() {
         ),
       ];
     },
-    [lesson?.id, lesson?.learningUnitId, resolveAudioUrl],
+    [lesson?.audioMode, lesson?.id, lesson?.learningUnitId, resolveAudioUrl],
   );
 
   const getFallbackLineDuration = (line: TranscriptLine) =>
@@ -893,13 +902,14 @@ export default function ListeningScreen() {
       };
       const handleError = () => {
         cleanup();
-        reject(new Error("Audio source failed to load"));
+        reject(new Error(`Audio source failed to load: ${sourceUrl}`));
       };
 
       audio.pause();
       audio.addEventListener("loadedmetadata", handleLoaded, { once: true });
       audio.addEventListener("canplay", handleLoaded, { once: true });
       audio.addEventListener("error", handleError, { once: true });
+      console.info("Loading learner audio source", sourceUrl);
       audio.src = sourceUrl;
       audio.load();
     });

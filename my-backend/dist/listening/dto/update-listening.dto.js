@@ -19,6 +19,7 @@ class UpdateListeningDto {
     titleVi;
     titleJa;
     audioUrl;
+    audioMode;
     durationSeconds;
     description;
     transcriptLines;
@@ -49,6 +50,12 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UpdateListeningDto.prototype, "audioUrl", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ enum: ['split', 'timed'], description: 'Audio playback source mode: split sentence files or one timed full audio file' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsIn)(['split', 'timed']),
+    __metadata("design:type", String)
+], UpdateListeningDto.prototype, "audioMode", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ type: Number, description: 'Duration of the audio in seconds', example: 68 }),
     (0, class_validator_1.IsOptional)(),
